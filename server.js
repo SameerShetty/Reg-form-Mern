@@ -7,18 +7,20 @@ const mongoose = require("mongoose");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use(cors());
-
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect("mongodb://localhost:27017/robocor");
 
 const particiSchema = new mongoose.Schema({
   teamname: {
     type: String,
+    required: [1, ""],
   },
   teamlead: {
     type: String,
+    required: [1, ""],
   },
   member_2: {
     type: String,
@@ -38,23 +40,21 @@ const particiSchema = new mongoose.Schema({
 
 const Team = mongoose.model("Team", particiSchema);
 
-app.get("/registerteam", function (req, res) {
-  const newt = req.body.title;
-  console.log(newt);
+app.post("/registerteam", function (req, res) {
+  const gp = new Team({
+    teamname: req.body.teamname,
+    teamlead: req.body.teamlead,
+    member_2: req.body.member_2,
+    member_3: req.body.member_3,
+    member_4: req.body.member_4,
+    eventname: req.body.eventslist,
+  });
+  gp.save((err) => {
+    if (err) {
+      console.log(err);
+    } else res.sendStatus(200);
+  });
 });
-// const { tname, tlead, m2, m3, m4, events } = req.body;
-// const gp = new Team({
-//   tname,
-//   tlead,
-//   m2,
-//   m3,
-//   m4,
-//   events,
-// });
-// console.log(gp);
-// gp.save();
-// res.sendStatus(200);
-
 // if (process.env.NODE_ENV === "production") {
 //     app.use(express.static("client-form/build"));
 //   }

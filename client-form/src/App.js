@@ -12,9 +12,17 @@ function App() {
     member_3: "",
     member_4: "",
   });
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setteam((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  }
 
   function handleClick(event) {
-    event.preventDefault();
     const gpteam = {
       teamname: team.teamname,
       teamlead: team.teamlead,
@@ -24,30 +32,15 @@ function App() {
       eventslist: events,
     };
 
-    // axios
-    //   .post("/registerteam", gpteam)
-    //   .then((response) => {
-    //     console.log(response.status);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    const article = { title: "React POST Request Example" };
     axios
-      .post("/registerteam", article)
+      .post("/registerteam", gpteam)
       .then((response) => {
-        console.log(response);
+        if (response.status === 200) alert("Thank you for registering !!!");
       })
-      .catch((error) => {
-        console.error("There was an error!", error);
+      .catch((err) => {
+        console.log(err);
       });
-  }
-  function handleChange(e) {
-    const value = e.target.value;
-    setteam({
-      ...team,
-      [e.target.name]: value,
-    });
+    event.preventDefault();
   }
 
   const handleOnChange = (e) => {
@@ -57,7 +50,9 @@ function App() {
       setevents((prev) => {
         return [...prev, name];
       });
-      settotal(Number(total) + Number(value));
+      settotal((prevtotal) => {
+        return Number(prevtotal) + Number(value);
+      });
     } else {
       settotal((prev) => {
         return Number(prev) - Number(value);
@@ -262,7 +257,7 @@ function App() {
             Total :{total}$
           </button>
           <button
-            onclick={handleClick}
+            onClick={handleClick}
             className="btn"
             style={{
               alignSelf: "flex-end",
